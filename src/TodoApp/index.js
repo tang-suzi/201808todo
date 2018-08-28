@@ -9,7 +9,6 @@ class TodoApp extends Component {
     constructor(props){
         super(props)
         this.state = {
-            todos:[], // 初始化默认状态
             filterType: FilterTypes.ALL
         }
     }
@@ -40,17 +39,6 @@ class TodoApp extends Component {
         })
         this.setState({todos})
     }
-    addTodo = (todo) => {
-        // todo.id = Date.now();
-        // todo.completed = false
-        // todo = Object.assign({},{id: Date.now(),completed: false,todo})
-        todo = {id: Date.now(),completed: false,...todo}
-        let todos = this.state.todos;
-        todos.push(todo)
-        this.setState({
-            todos
-        })
-    }
     changeFilterType = (filterType)=>{
         this.setState({
             filterType
@@ -62,7 +50,7 @@ class TodoApp extends Component {
         this.setState({todos})
     }
     render() {
-        let todos = this.state.todos;
+        let todos = this.props.model.todos;
         let activeTodoCount = todos.reduce((count, todo)=>count+(todo.completed?0:1),0);
         let completedTodoCount = todos.length - activeTodoCount;
         let showTodos = todos.filter((todo)=>{
@@ -93,7 +81,7 @@ class TodoApp extends Component {
                     <div className="col-md-6 col-md-offset-3">
                         <div className="panel panel-default">
                             <div className="panel-heading">
-                                <TodoHeader addTodo={this.addTodo}/>
+                                <TodoHeader addTodo={this.props.model.addTodo}/>
                             </div>
                             <div className="panel-body">
                                 {main}
