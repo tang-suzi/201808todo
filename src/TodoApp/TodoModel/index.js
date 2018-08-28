@@ -12,6 +12,11 @@ class TodoModel {
     emit(){
         this.listeners.forEach(listener => listener())
     }
+    saveAndNotify(todos){
+        localStorage.setItem(this.STOTE_KEY,JSON.stringify(todos));
+        this.todos = todos;
+        this.emit();
+    }
     // 增加todo
     addTodo = (todo) => {
         // todo.id = Date.now();
@@ -20,8 +25,37 @@ class TodoModel {
         todo = {id: Date.now()+Math.random(),completed: false,...todo}
         let todos = this.todos;
         todos.push(todo)
-        localStorage.setItem(this.STOTE_KEY,JSON.stringify(todos));
-        this.emit();
+        this.saveAndNotify(todos)
+    }
+    toggle = (id) => {
+        let todos = this.todos;
+        todos = todos.map(todo=>{
+            if(todo.id === id){
+                todo.completed = !todo.completed;
+            }
+            return todo
+        })
+        this.saveAndNotify(todos)
+    }
+    remove=(id)=>{
+        let todos = this.todos;
+        let index = todos.findIndex(todo=>todo.id === id);
+        todos.splice(index,1)
+        this.saveAndNotify(todos)
+    }
+    toggleAll= (e) => {
+        let checked = e.target.checked;
+        let todos = this.todos;
+        todos = todos.map(todo=>{
+            todo.completed = checked;
+            return todo
+        })
+        this.saveAndNotify(todos)
+    }
+    clearCompleted = ()=>{
+        let todos = this.todos;
+        todos = todos.filter(todo=>!todo.completed);
+        this.saveAndNotify(todos)
     }
 }
 
